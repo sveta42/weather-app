@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weatherapp
+spec:
+  selector:
+    matchLabels:
+      app: weatherapp
+  template:
+    metadata:
+      labels:
+        app: weatherapp
+    spec:
+      containers:
+      - image: 983612380489.dkr.ecr.eu-central-1.amazonaws.com/weather_app
+        name: weatherapp
+        ports:
+          - containerPort: 5000
+        imagePullPolicy: IfNotPresent
+      nodeSelector:
+            kubernetes.io/os: linux
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: weatherapp-service
+  namespace: default
+spec:
+  type: LoadBalancer
+  selector:
+    app: weatherapp
+  ports:
+    - port: 80
+      targetPort: 5000
